@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    avatar_idle.xml
+    PLACEHOLDER: círculo simples com "C", só pra ter algo visível rodando
+    antes de trocar por uma arte real do personagem.
+
+    Pra usar uma imagem de verdade (PNG/sprite da Capri), basta:
+    1. Colocar o arquivo em res/drawable/ (ex: avatar_idle.png)
+    2. Apontar overlay_capri.xml -> android:src="@drawable/avatar_idle"
+       (o nome do arquivo substitui este XML automaticamente)
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="72"
+    android:viewportHeight="72">
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M36,4 A32,32 0 1,1 35.9,4 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M36,20 L42,36 L36,52 L30,36 Z" />
+</vector>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Capri Assistant</string>
+    <string name="accessibility_service_description">
+        Permite que a Capri leia os textos visíveis na tela. Esses textos ficam só no
+        celular e só são enviados à IA (Google Gemini) quando você toca na Capri e
+        definiu um jogo no painel do app.
+    </string>
+</resources>

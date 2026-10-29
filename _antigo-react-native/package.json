@@ -1,0 +1,23 @@
+{
+  "name": "capri-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Assistente de tela flutuante com IA - camada de chat/IA, overlay e accessibility para Android.",
+  "scripts": {
+    "test:brain": "ts-node src/ai/test-brain.ts",
+    "start": "react-native start",
+    "android": "react-native run-android"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-native": "0.75.4"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@react-native/metro-config": "^0.75.4",
+    "@react-native/babel-preset": "^0.75.4"
+  }
+}
