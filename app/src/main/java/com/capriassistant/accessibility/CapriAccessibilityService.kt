@@ -1,61 +1,87 @@
 package com.capriassistant.accessibility
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Bitmap
+import android.os.Build
+import android.util.Base64
+import android.view.Display
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.Executors
+import kotlin.math.max
 
-/**
- * Lê os TEXTOS visíveis da tela atual (a mesma API usada por leitores de tela).
- * Não captura imagem. Só guarda o último estado em memória — nada é enviado
- * para a internet aqui. O envio só acontece quando o usuário TOCA na Capri
- * e já definiu um jogo no painel (ver OverlayService).
- */
 class CapriAccessibilityService : AccessibilityService() {
-
-    data class ScreenContextSnapshot(
-        val appPackageName: String?,
-        val visibleTexts: List<String>,
-        val timestamp: Long
-    )
-
     companion object {
-        @Volatile var latest: ScreenContextSnapshot? = null
-        private const val MIN_MS_BETWEEN_CAPTURES = 1_000L
+        @Volatile var currentPackage: String? = null
+        @Volatile var latestTexts: List<String> = emptyList()
+        @Volatile var instance: CapriAccessibilityService? = null
     }
 
-    private var lastCaptureAt = 0L
+    private val io = Executors.newSingleThreadExecutor()
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        instance = this
+    }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
-        if (event == null) return
-        val pkg = event.packageName?.toString()
-        if (pkg == null || pkg == packageName) return // ignora o próprio app
+        val pkg = event?.packageName?.toString() ?: return
+        if (pkg == packageName || pkg.contains("systemui") || pkg.contains("inputmethod")) return
 
-        // Limita a frequência: jogos disparam eventos o tempo todo.
-        val now = System.currentTimeMillis()
-        if (now - lastCaptureAt < MIN_MS_BETWEEN_CAPTURES) return
-        lastCaptureAt = now
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            currentPackage = pkg
+        }
 
         val root = rootInActiveWindow ?: return
-        val texts = ArrayList<String>()
+        val texts = mutableListOf<String>()
         collect(root, texts, 0)
-
-        latest = ScreenContextSnapshot(pkg, texts.take(20), now)
+        latestTexts = texts.take(15)
     }
 
     private fun collect(node: AccessibilityNodeInfo, out: MutableList<String>, depth: Int) {
-        if (depth > 12 || out.size > 50) return
+        if (depth > 10 || out.size > 25) return
         node.text?.toString()?.takeIf { it.isNotBlank() }?.let { out.add(it) }
-        node.contentDescription?.toString()?.takeIf { it.isNotBlank() }?.let { out.add(it) }
         for (i in 0 until node.childCount) {
             val child = node.getChild(i) ?: continue
             collect(child, out, depth + 1)
         }
     }
 
-    override fun onInterrupt() {}
+    fun takeJpegBase64(onDone: (String?) -> Unit) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            onDone(null)
+            return
+        }
+        try {
+            takeScreenshot(Display.DEFAULT_DISPLAY, io, object : TakeScreenshotCallback {
+                override fun onSuccess(result: ScreenshotResult) {
+                    try {
+                        val hw = result.hardwareBuffer
+                        val hwBmp = Bitmap.wrapHardwareBuffer(hw, result.colorSpace)
+                        val soft = hwBmp?.copy(Bitmap.Config.ARGB_8888, false)
+                        hw.close()
+                        if (soft != null) {
+                            val scale = 600f / max(soft.width, soft.height)
+                            val scaled = Bitmap.createScaledBitmap(
+                                soft, (soft.width * scale).toInt(), (soft.height * scale).toInt(), true
+                            )
+                            val bos = ByteArrayOutputStream()
+                            scaled.compress(Bitmap.CompressFormat.JPEG, 55, bos)
+                            onDone(Base64.encodeToString(bos.toByteArray(), Base64.NO_WRAP))
+                            return
+                        }
+                    } catch (_: Exception) {}
+                    onDone(null)
+                }
+                override fun onFailure(errorCode: Int) { onDone(null) }
+            })
+        } catch (_: Exception) { onDone(null) }
+    }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        latest = null
+    override fun onInterrupt() {}
+    override fun onUnbind(intent: android.content.Intent?): Boolean {
+        instance = null
+        return super.onUnbind(intent)
     }
 }

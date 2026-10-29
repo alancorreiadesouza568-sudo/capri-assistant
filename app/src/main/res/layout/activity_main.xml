@@ -1,112 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:background="#0C0B0F"
+    android:orientation="vertical"
+    android:padding="24dp">
 
-    <LinearLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CAPRI ASSISTANT"
+        android:textColor="#F2154C"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/status_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Configure as permissões abaixo:"
+        android:textColor="#ECE9F1" />
+
+    <EditText
+        android:id="@+id/input_api_key"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_marginTop="20dp"
+        android:background="#18161E"
+        android:hint="Cole sua chave Gemini API aqui"
+        android:padding="12dp"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#635E6F" />
 
-        <TextView
-            android:id="@+id/status_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginBottom="16dp"
-            android:text="Verificando permissões..." />
+    <Button
+        android:id="@+id/btn_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#24212B"
+        android:text="1. Permitir Sobrepor a outros apps" />
 
-        <Button
-            android:id="@+id/btn_grant_permission"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="1. Permissão de overlay" />
+    <Button
+        android:id="@+id/btn_accessibility"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#24212B"
+        android:text="2. Ativar Capri em Acessibilidade" />
 
-        <Button
-            android:id="@+id/btn_grant_accessibility"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="2. Acessibilidade (opcional)" />
+    <Button
+        android:id="@+id/btn_start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#F2154C"
+        android:text="INICIAR CAPRI" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Chave da API (Google AI Studio)" />
-
-        <EditText
-            android:id="@+id/input_api_key"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="Cole a chave aqui" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Modelo" />
-
-        <EditText
-            android:id="@+id/input_model"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="gemini-flash-latest" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Jogo atual (opcional — se preencher, o texto da tela vai junto no pedido de dica)" />
-
-        <EditText
-            android:id="@+id/input_game"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:hint="ex: Elden Ring" />
-
-        <Button
-            android:id="@+id/btn_start_capri"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Iniciar Capri" />
-
-        <Button
-            android:id="@+id/btn_stop_capri"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Parar Capri" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Testar conversa" />
-
-        <EditText
-            android:id="@+id/input_chat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapSentences|textMultiLine"
-            android:hint="Fale com a Capri" />
-
-        <Button
-            android:id="@+id/btn_send_chat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Enviar" />
-
-        <TextView
-            android:id="@+id/chat_output"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="15sp"
-            android:textIsSelectable="true" />
-    </LinearLayout>
-</ScrollView>
+    <Button
+        android:id="@+id/btn_stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#18161E"
+        android:text="PARAR" />
+</LinearLayout>

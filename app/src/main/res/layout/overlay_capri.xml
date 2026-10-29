@@ -1,36 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    overlay_capri.xml
-    Layout do "bonequinho" flutuante: avatar + balão de fala acima dele.
-    Fica dentro de uma janela do tipo TYPE_APPLICATION_OVERLAY, desenhada
-    por cima de outros apps (ver OverlayService.kt).
--->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
+    android:layout_height="wrap_content">
 
-    <!-- Balão de fala: começa invisível, aparece quando a Capri tem algo a dizer -->
-    <TextView
-        android:id="@+id/speech_bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:maxWidth="220dp"
-        android:padding="10dp"
-        android:background="@drawable/bubble_background"
-        android:textColor="#1A1A1A"
-        android:textSize="13sp"
-        android:visibility="gone"
-        android:text="" />
-
-    <!-- Avatar: imagem estática por enquanto, trocada por estado (idle/thinking/talking/etc) -->
-    <ImageView
-        android:id="@+id/avatar_image"
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:src="@drawable/avatar_idle"
-        android:contentDescription="Capri" />
-
-</LinearLayout>
+    <WebView
+        android:id="@+id/capri_webview"
+        android:layout_width="260dp"
+        android:layout_height="360dp"
+        android:background="#00000000" />
+</FrameLayout>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100%; height: 100%;
+      background: transparent; overflow: hidden; user-select: none;
+    }
+    #bubble {
+      position: absolute; left: 50%; top: 6px;
+      transform: translateX(-50%) translateY(-10px);
+      width: 82%; max-height: 110px; overflow-y: auto;
+      font-family: -apple-system, Roboto, sans-serif;
+      font-weight: 600; font-size: 13px; line-height: 1.4;
+      color: #eafff3; background: rgba(12, 11, 15, 0.95);
+      border: 1.5px solid #22f27a;
+      box-shadow: 0 0 10px rgba(34, 242, 122, 0.35);
+      padding: 10px 12px 14px;
+      clip-path: polygon(0 0, 100% 0, 100% 82%, 58% 82%, 50% 100%, 42% 82%, 0 82%);
+      opacity: 0; transition: all 0.25s ease-out;
+      pointer-events: auto; text-align: center;
+    }
+    #bubble.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+    canvas { display: block; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <div id="bubble"></div>
+  <canvas id="stage"></canvas>
+
+  <script>
+    const canvas = document.getElementById('stage');
+    const ctx = canvas.getContext('2d');
+    const bubble = document.getElementById('bubble');
+    let bubbleTimer = null;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.onresize = resize;
+    resize();
+
+    window.showSpeech = function(text, time = 7000) {
+      bubble.innerHTML = text;
+      bubble.classList.add('show');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = setTimeout(() => bubble.classList.remove('show'), time);
+    };
+
+    bubble.onclick = () => bubble.classList.remove('show');
+
+    let t = 0;
+    function draw() {
+      t += 0.03;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const cx = canvas.width / 2;
+      const cy = canvas.height * 0.65;
+      const bob = Math.sin(t * 2) * 5;
+
+      ctx.save();
+      ctx.translate(cx, cy + bob);
+
+      // Cabelo Crimson Pontiagudo (Cyberpunk)
+      ctx.fillStyle = '#f2154c';
+      ctx.beginPath();
+      ctx.moveTo(-65, -40);
+      ctx.lineTo(-20, -110);
+      ctx.lineTo(0, -90);
+      ctx.lineTo(30, -120);
+      ctx.lineTo(65, -35);
+      ctx.lineTo(85, 10);
+      ctx.lineTo(40, -10);
+      ctx.lineTo(0, 30);
+      ctx.lineTo(-40, -10);
+      ctx.lineTo(-85, 10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Rosto / Máscara Neon Green
+      ctx.fillStyle = '#22f27a';
+      ctx.beginPath();
+      ctx.moveTo(-25, -45);
+      ctx.lineTo(25, -45);
+      ctx.lineTo(15, -10);
+      ctx.lineTo(0, 0);
+      ctx.lineTo(-15, -10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Olhos Azuis Concêntricos
+      const blink = Math.sin(t * 3) > 0.96 ? 0.1 : 1;
+      ctx.fillStyle = '#0a0710';
+      ctx.fillRect(-18, -38, 12, 10 * blink);
+      ctx.fillRect(6, -38, 12, 10 * blink);
+
+      ctx.fillStyle = '#1d6cff';
+      ctx.fillRect(-15, -35, 6, 6 * blink);
+      ctx.fillRect(9, -35, 6, 6 * blink);
+
+      // Boca Zigzag
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(-8, -12);
+      ctx.lineTo(-4, -9);
+      ctx.lineTo(0, -12);
+      ctx.lineTo(4, -9);
+      ctx.lineTo(8, -12);
+      ctx.stroke();
+
+      ctx.restore();
+      requestAnimationFrame(draw);
+    }
+    draw();
+
+    let lastTap = 0;
+    canvas.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        if (window.AndroidCapri) window.AndroidCapri.openChat();
+      } else {
+        if (window.AndroidCapri) window.AndroidCapri.onPoke();
+      }
+      lastTap = now;
+    });
+  </script>
+</body>
+</html>

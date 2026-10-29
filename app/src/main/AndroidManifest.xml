@@ -1,73 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--
-        SYSTEM_ALERT_WINDOW: permissão oficial do Android para desenhar
-        por cima de outros apps. O usuário precisa conceder manualmente
-        em Configurações > Apps > Capri > Exibir sobre outros apps —
-        não é algo que o código consiga ativar sozinho.
-    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-
-    <!--
-        FOREGROUND_SERVICE: necessária para o OverlayService rodar de
-        forma estável em segundo plano sem o Android matá-lo. A partir
-        do Android 14 (API 34) também é preciso declarar o tipo
-        específico do foreground service (ver FOREGROUND_SERVICE_SPECIAL_USE
-        abaixo).
-    -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
-
-    <!-- Necessária para o CapriBrain falar com a API de IA -->
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
 
     <application
-        android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:allowBackup="true"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:label="Capri Assistant"
+        android:theme="@style/Theme.CapriAssistant">
 
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTask">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!--
-            O OverlayService roda como foreground service com tipo
-            "specialUse" — categoria do Android para serviços que não
-            se encaixam nos tipos padrão (câmera, localização, mídia, etc).
-            É obrigatório justificar o uso (propertyValue) a partir do
-            Android 14.
-        -->
         <service
             android:name=".overlay.OverlayService"
-            android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="specialUse">
-            <property
-                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
-                android:value="Assistente visual flutuante de uso pessoal" />
-        </service>
+            android:foregroundServiceType="specialUse" />
 
-        <!--
-            CapriAccessibilityService: requer BIND_ACCESSIBILITY_SERVICE
-            (só o sistema pode se conectar a este serviço) e é ativado
-            manualmente pelo usuário em Configurações > Acessibilidade.
-            A descrição mostrada nessa tela vem de
-            accessibility_service_config.xml / strings.xml.
-        -->
         <service
             android:name=".accessibility.CapriAccessibilityService"
-            android:enabled="true"
-            android:exported="false"
+            android:exported="true"
+            android:label="Capri Vision"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -76,6 +44,5 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
-
     </application>
 </manifest>
